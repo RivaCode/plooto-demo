@@ -50,12 +50,28 @@ namespace Plooto.AF.Todos
             return new NoContentResult();
         }
 
+        [FunctionName(nameof(PutTodoByIdAssign))]
+        public static async Task<IActionResult> PutTodoByIdAssign(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todos/{id}/assign")] HttpRequest req,
+        ILogger log)
+        {
+            return new NoContentResult();
+        }
+
         [FunctionName(nameof(DeleteTodoById))]
         public static async Task<IActionResult> DeleteTodoById(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todos/{id}")] HttpRequest req,
             ILogger log)
         {
             return new NoContentResult();
+        }
+
+        [FunctionName(nameof(GetUsers))]
+        public static async Task<IActionResult> GetUsers(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "users")] HttpRequest req,
+        ILogger log)
+        {
+            return new OkObjectResult("all users");
         }
     }
 }
