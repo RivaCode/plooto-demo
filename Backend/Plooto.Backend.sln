@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plooto.AF.Todos", "Plooto.AF.Todos\Plooto.AF.Todos.csproj", "{295F0B15-5A3E-42AE-925F-855CE2B43FB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plooto.Extensions.HttpQuery", "Plooto.Extensions.HttpQuery\Plooto.Extensions.HttpQuery.csproj", "{02C0D862-B967-4A08-B256-399D545AB5A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plooto.Extensions.AzureSearch", "Plooto.Extensions.AzureSearch\Plooto.Extensions.AzureSearch.csproj", "{3F516FC9-5137-43F4-8CAF-1D8B9F224279}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{295F0B15-5A3E-42AE-925F-855CE2B43FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295F0B15-5A3E-42AE-925F-855CE2B43FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295F0B15-5A3E-42AE-925F-855CE2B43FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295F0B15-5A3E-42AE-925F-855CE2B43FB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02C0D862-B967-4A08-B256-399D545AB5A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02C0D862-B967-4A08-B256-399D545AB5A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02C0D862-B967-4A08-B256-399D545AB5A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02C0D862-B967-4A08-B256-399D545AB5A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F516FC9-5137-43F4-8CAF-1D8B9F224279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F516FC9-5137-43F4-8CAF-1D8B9F224279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F516FC9-5137-43F4-8CAF-1D8B9F224279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F516FC9-5137-43F4-8CAF-1D8B9F224279}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5AD5A3E1-41BB-449A-A22F-74CC0290C898}
+	EndGlobalSection
+EndGlobal
