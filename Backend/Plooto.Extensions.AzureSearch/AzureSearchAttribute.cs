@@ -1,7 +1,5 @@
 ﻿using Microsoft.Azure.WebJobs.Description;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Plooto.Extensions.AzureSearch
 {
@@ -20,10 +18,5 @@ namespace Plooto.Extensions.AzureSearch
 
         [AutoResolve]
         public string Key { get; set; }
-
-        [AutoResolve]
-        public string SearchText { get; set; }
-
-        public string[] SelectedFields { get; set; }
     }
 }

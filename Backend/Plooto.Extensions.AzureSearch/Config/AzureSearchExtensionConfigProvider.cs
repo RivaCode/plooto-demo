@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using LazyCache;
+﻿using LazyCache;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Description;
@@ -10,6 +7,9 @@ using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Logging;
 using Microsoft.Extensions.Logging;
 using Plooto.Extensions.AzureSearch.Bindings;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Plooto.Extensions.AzureSearch.Config
 {
@@ -82,7 +82,7 @@ namespace Plooto.Extensions.AzureSearch.Config
             }
         }
 
-        private class DocumentConverter<T> : 
+        private class DocumentConverter<T> :
             IAsyncConverter<AzureSearchAttribute, IAsyncCollector<T>>,
             IAsyncConverter<AzureSearchAttribute, T>
         {
