@@ -35,6 +35,7 @@ namespace Plooto.Extensions.AzureSearch.Config
 
             searchRule.BindToInput(SearchIndexClientInput);
             searchRule.BindToCollector<OpenType>(typeof(DocumentConverter<>), constructorArgs: this);
+            searchRule.BindToInput<OpenType>(typeof(DocumentConverter<>), constructorArgs: this);
         }
 
         private ISearchIndexClient SearchIndexClientInput(AzureSearchAttribute input)
@@ -56,11 +57,12 @@ namespace Plooto.Extensions.AzureSearch.Config
             return searchServiceClient.Indexes.GetClient(input.IndexName);
         }
 
+
+        private static bool IsEmpty(string value) =>
+            string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value);
+
         private static void ValidateAttribute(AzureSearchAttribute input, Type _)
         {
-            bool IsEmpty(string value) =>
-                string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value);
-
             string Invalid(string propName) =>
                 $"{propName} must be provided either by AppSettings or {nameof(AzureSearchAttribute)}";
 
@@ -80,7 +82,9 @@ namespace Plooto.Extensions.AzureSearch.Config
             }
         }
 
-        private class DocumentConverter<T> : IAsyncConverter<AzureSearchAttribute, IAsyncCollector<T>>
+        private class DocumentConverter<T> : 
+            IAsyncConverter<AzureSearchAttribute, IAsyncCollector<T>>,
+            IAsyncConverter<AzureSearchAttribute, T>
         {
             private readonly AzureSearchExtensionConfigProvider _owner;
 
@@ -91,6 +95,24 @@ namespace Plooto.Extensions.AzureSearch.Config
                     new DocumentCollector<T>(
                         _owner.SearchIndexClientInput(input),
                         _owner._logger));
+
+            async Task<T> IAsyncConverter<AzureSearchAttribute, T>.ConvertAsync(AzureSearchAttribute input, CancellationToken cancellationToken)
+            {
+                if (IsEmpty(input.Key))
+                {
+                    throw new InvalidOperationException(
+                        $"Must provide a valid {nameof(AzureSearchAttribute.Key)} in order to resolve {typeof(T).Name}");
+                }
+
+                try
+                {
+                    return await _owner.SearchIndexClientInput(input).Documents.GetAsync<T>(input.Key, cancellationToken: cancellationToken);
+                }
+                catch (Exception)
+                {
+                    return default;
+                }
+            }
         }
 
     }

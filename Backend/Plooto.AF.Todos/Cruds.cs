@@ -19,9 +19,8 @@ namespace Plooto.AF.Todos
     public class TodosApi
     {
         [FunctionName(nameof(GetTodos))]
-        public static async Task<IActionResult> GetTodos(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos")]
-            HttpRequest req,
+        public  async Task<IActionResult> GetTodos(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos")] HttpRequest req,
             [AzureSearch] ISearchIndexClient todo,
             ILogger log)
         {
@@ -41,9 +40,8 @@ namespace Plooto.AF.Todos
         }
 
         [FunctionName(nameof(GetTodosSuggestion))]
-        public static async Task<IActionResult> GetTodosSuggestion(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos/suggestion")]
-            HttpRequest req,
+        public  async Task<IActionResult> GetTodosSuggestion(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos/suggestion")] HttpRequest req,
             [AzureSearch] ISearchIndexClient todos,
             ILogger log)
         {
@@ -52,18 +50,23 @@ namespace Plooto.AF.Todos
 
 
         [FunctionName(nameof(GetTodoById))]
-        public static async Task<IActionResult> GetTodoById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos/{id}")]
-            HttpRequest req,
-            ILogger log)
+        public IActionResult GetTodoById(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos/{id}")] HttpRequest req,
+            [AzureSearch(Key = "{id}")] Ticket ticket,
+            ILogger logger)
         {
-            return new OkObjectResult(nameof(GetTodoById));
+            if (ticket == null)
+            {
+                logger.LogWarning("Ticket not found");
+                return new NotFoundResult();
+            }
+            logger.LogInformation("Ticket found");
+            return new OkObjectResult(ticket);
         }
 
         [FunctionName(nameof(PostTodo))]
         public async Task<IActionResult> PostTodo(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "todos")]
-            HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "todos")] HttpRequest req,
             [AzureSearch(ApiKey = "AzureSearch:WriteApiKey")] IAsyncCollector<Ticket> collector,
             ILogger logger)
         {
@@ -114,18 +117,16 @@ namespace Plooto.AF.Todos
         }
 
         [FunctionName(nameof(PutTodoById))]
-        public static async Task<IActionResult> PutTodoById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todos/{id}")]
-            HttpRequest req,
+        public  async Task<IActionResult> PutTodoById(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todos/{id}")] HttpRequest req,
             ILogger log)
         {
             return new NoContentResult();
         }
 
         [FunctionName(nameof(DeleteTodoById))]
-        public static async Task<IActionResult> DeleteTodoById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todos/{id}")]
-            HttpRequest req,
+        public  async Task<IActionResult> DeleteTodoById(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todos/{id}")] HttpRequest req,
             string id,
             [AzureSearch(ApiKey = "AzureSearch:WriteApiKey")] ISearchIndexClient todos,
             ILogger logger)
@@ -140,7 +141,7 @@ namespace Plooto.AF.Todos
                 logger.LogWarning($"Ticket not found (id: {id})");
                 return new NotFoundObjectResult(new { error = $"Ticket not found (id: {id})", id });
             }
-            
+
             try
             {
                 logger.LogDebug($"Deleting ticket (id: {id})");
