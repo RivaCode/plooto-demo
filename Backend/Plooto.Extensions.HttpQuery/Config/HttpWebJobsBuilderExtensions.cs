@@ -6,6 +6,7 @@ namespace Plooto.Extensions.HttpQuery.Config
     {
         public static IWebJobsBuilder AddHttpQuery(this IWebJobsBuilder @this)
         {
+            @this.AddExtension<HttpQueryExtensionConfigProvider>();
             return @this;
         }
     }
