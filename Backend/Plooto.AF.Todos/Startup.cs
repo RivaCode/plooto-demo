@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Azure.Search;
-using Microsoft.Azure.Search.Models;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Plooto.AF.Todos;
-using Plooto.AF.Todos.Models;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace Plooto.AF.Todos
@@ -13,6 +8,7 @@ namespace Plooto.AF.Todos
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
+
         }
     }
 }

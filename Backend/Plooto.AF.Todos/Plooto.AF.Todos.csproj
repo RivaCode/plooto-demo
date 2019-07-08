@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plooto.Extensions.AzureSearch\Plooto.Extensions.AzureSearch.csproj" />
+    <ProjectReference Include="..\Plooto.Extensions.HttpQuery\Plooto.Extensions.HttpQuery.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
