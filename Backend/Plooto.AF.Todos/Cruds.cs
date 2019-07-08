@@ -51,9 +51,11 @@ namespace Plooto.AF.Todos
                         }, Formatting.Indented)}");
                 }
 
-                var docs = await todo.Documents.SearchAsync<Ticket>(
-                    searchText: "*",
-                    searchParameters: searchParams);
+                var docs = await todo.Documents
+                    .SearchAsync<Ticket>(
+                        searchText: "*",
+                        searchParameters: searchParams)
+                    .ConfigureAwait(false);
 
                 string Route(string queryString) => queryString != null ? $"/api/todos?{queryString}" : null;
 
@@ -85,13 +87,12 @@ namespace Plooto.AF.Todos
             [AzureSearch] ISearchIndexClient todo,
             ILogger log)
         {
-            var docs = await todo.Documents.SearchAsync<Ticket>(
-                searchText: "*",
-                new SearchParameters
-                {
-                    IncludeTotalResultCount = true,
-                    Facets = new List<string> { nameof(Ticket.Tags) }
-                });
+            var docs = await todo.Documents
+                .SearchAsync<Ticket>(
+                    searchText: "*",
+                    new SearchParameters(facets: new List<string> {nameof(Ticket.Tags)}))
+                .ConfigureAwait(false);
+
             return new OkObjectResult(
                 docs.Facets[nameof(Ticket.Tags)]
                     .Select(facet => new { Tag = facet.Value, facet.Count }));
@@ -132,7 +133,8 @@ namespace Plooto.AF.Todos
             [AzureSearch(ApiKey = "AzureSearch:WriteApiKey")] IAsyncCollector<Ticket> collector,
             ILogger logger)
         {
-            var newTicket = JsonConvert.DeserializeObject<NewTicket>(await req.ReadAsStringAsync().ConfigureAwait(false));
+            var newTicket = JsonConvert.DeserializeObject<NewTicket>(
+                await req.ReadAsStringAsync().ConfigureAwait(false));
 
             if (newTicket == null)
             {
@@ -187,10 +189,10 @@ namespace Plooto.AF.Todos
         {
             try
             {
-                var ticket = await todos.Documents.GetAsync<Ticket>(id);
+                var ticket = await todos.Documents.GetAsync<Ticket>(id).ConfigureAwait(false);
 
                 logger.LogDebug($"Deleting ticket (id: {id})");
-                await todos.Documents.IndexAsync(IndexBatch.Delete(new[] { ticket }));
+                await todos.Documents.IndexAsync(IndexBatch.Delete(new[] { ticket })).ConfigureAwait(false);
 
                 logger.LogDebug($"Successfully deleted ticket (id: {id})");
                 return new NoContentResult();
