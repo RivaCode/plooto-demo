@@ -12,6 +12,7 @@ using Plooto.Extensions.AzureSearch;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Rest.Azure;
 
 namespace Plooto.AF.Todos
 {
@@ -90,7 +91,7 @@ namespace Plooto.AF.Todos
                 var ticket = new Ticket
                 {
                     Description = newTicket.Description,
-                    Tags = newTicket.Tags?.ToArray() ?? new string[]{},
+                    Tags = newTicket.Tags?.ToArray() ?? new string[] { },
                     Completed = false,
                     Id = Guid.NewGuid().ToString()
                 };
@@ -125,8 +126,31 @@ namespace Plooto.AF.Todos
         public static async Task<IActionResult> DeleteTodoById(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todos/{id}")]
             HttpRequest req,
-            ILogger log)
+            string id,
+            [AzureSearch(ApiKey = "AzureSearch:WriteApiKey")] ISearchIndexClient todos,
+            ILogger logger)
         {
+            Ticket ticket;
+            try
+            {
+                ticket = await todos.Documents.GetAsync<Ticket>(id);
+            }
+            catch (CloudException)
+            {
+                logger.LogWarning($"Ticket not found (id: {id})");
+                return new NotFoundObjectResult(new { error = $"Ticket not found (id: {id})", id });
+            }
+            
+            try
+            {
+                logger.LogDebug($"Deleting ticket (id: {id})");
+                await todos.Documents.IndexAsync(IndexBatch.Delete(new[] { ticket }));
+            }
+            catch
+            {
+                return new UnprocessableEntityObjectResult(new { error = $"Unable to delete ticket (id: {id})", id });
+            }
+            logger.LogDebug($"Successfully deleted ticket (id: {id})");
             return new NoContentResult();
         }
     }
