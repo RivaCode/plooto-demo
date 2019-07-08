@@ -90,7 +90,7 @@ namespace Plooto.AF.Todos
             var docs = await todo.Documents
                 .SearchAsync<Ticket>(
                     searchText: "*",
-                    new SearchParameters(facets: new List<string> {nameof(Ticket.Tags)}))
+                    new SearchParameters(facets: new List<string> { nameof(Ticket.Tags) }))
                 .ConfigureAwait(false);
 
             return new OkObjectResult(
@@ -183,24 +183,23 @@ namespace Plooto.AF.Todos
         public async Task<IActionResult> DeleteTodoById(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todos/{id}")] HttpRequest req,
             string id,
-            [AzureSearch(ApiKey = "AzureSearch:WriteApiKey")] ISearchIndexClient todos,
+            [AzureSearch(Key = "{id}")] Ticket toDeleteTicket,
+            [AzureSearch(ApiKey = "AzureSearch:WriteApiKey")] ISearchIndexClient writeTodos,
             ILogger logger)
         {
-            try
-            {
-                var ticket = await todos.Documents.GetAsync<Ticket>(id).ConfigureAwait(false);
-
-                logger.LogDebug($"Deleting ticket (id: {id})");
-                await todos.Documents.IndexAsync(IndexBatch.Delete(new[] { ticket })).ConfigureAwait(false);
-
-                logger.LogDebug($"Successfully deleted ticket (id: {id})");
-                return new NoContentResult();
-            }
-            catch (CloudException e) when (e.Response.StatusCode == HttpStatusCode.NotFound)
+            if (toDeleteTicket == null)
             {
                 logger.LogWarning($"Ticket not found (id: {id})");
                 return new NotFoundObjectResult(new { error = $"Ticket not found (id: {id})", id });
             }
+
+            logger.LogDebug($"Deleting ticket (id: {id})");
+            await writeTodos.Documents
+                .IndexAsync(IndexBatch.Delete(new[] {toDeleteTicket}))
+                .ConfigureAwait(false);
+
+            logger.LogDebug($"Successfully deleted ticket (id: {id})");
+            return new NoContentResult();
         }
     }
 }
