@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Plooto.Extensions.AzureSearch.Config
 {
@@ -6,6 +7,8 @@ namespace Plooto.Extensions.AzureSearch.Config
     {
         public static IWebJobsBuilder AddAzureSearch(this IWebJobsBuilder @this)
         {
+            @this.Services.AddLazyCache();
+            @this.AddExtension<AzureSearchExtensionConfigProvider>();
             return @this;
         }
     }
