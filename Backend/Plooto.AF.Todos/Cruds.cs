@@ -133,8 +133,7 @@ namespace Plooto.AF.Todos
             [AzureSearch(ApiKey = "AzureSearch:WriteApiKey")] IAsyncCollector<Ticket> collector,
             ILogger logger)
         {
-            var newTicket = JsonConvert.DeserializeObject<NewTicket>(
-                await req.ReadAsStringAsync().ConfigureAwait(false));
+            var newTicket = await req.ReadAsAsync<NewTicket>().ConfigureAwait(false);
 
             if (newTicket == null)
             {
